@@ -1,48 +1,160 @@
 <nav class="navbar navbar-vertical navbar-expand-lg" style="display:none;">
-        <div class="collapse navbar-collapse" id="navbarVerticalCollapse">
-          <!-- scrollbar removed-->
-          <div class="navbar-vertical-content">
-            <ul class="navbar-nav flex-column" id="navbarVerticalNav">
+  <div class="collapse navbar-collapse" id="navbarVerticalCollapse">
+    <!-- scrollbar removed-->
+    <div class="navbar-vertical-content">
+      <ul class="navbar-nav flex-column" id="navbarVerticalNav">
 
-              <li class="nav-item">
-                <!-- label-->
-                <p class="navbar-vertical-label">Apps</p>
-                <hr class="navbar-vertical-line" /><!-- parent pages-->
-                  <div class="nav-item-wrapper"><a class="nav-link dropdown-indicator label-1" href="#nv-CRM" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-CRM">
-                          <div class="d-flex align-items-center">
-                              <div class="dropdown-indicator-icon-wrapper"><span class="fas fa-caret-right dropdown-indicator-icon"></span></div><span class="nav-link-icon"><span data-feather="phone"></span></span><span class="nav-link-text">CRM</span>
-                          </div>
-                      </a>
-                      <div class="parent-wrapper label-1">
-                          <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-CRM">
-                              <li class="collapsed-nav-item-title d-none">CRM</li>
-                              <li class="nav-item"><a class="nav-link" href="apps/crm/analytics.html">
-                                      <div class="d-flex align-items-center"><span class="nav-link-text">Analytics</span></div>
-                                  </a><!-- more inner pages-->
-                              </li>
-
-                          </ul>
-                      </div>
-                  </div><!-- parent pages-->
-
-                <div class="nav-item-wrapper"><a class="nav-link label-1" href="apps/calendar.html" role="button" data-bs-toggle="" aria-expanded="false">
-                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span data-feather="calendar"></span></span><span class="nav-link-text-wrapper"><span class="nav-link-text">Calendar</span></span></div>
-                  </a></div>
-              </li>
-
-            </ul>
+        <!-- User Info Section -->
+        <li class="nav-item">
+          <div class="nav-link d-flex align-items-center">
+            <div class="avatar avatar-m me-2">
+              <div class="avatar-name rounded-circle">
+                <span>{{ substr(auth()->user()->name, 0, 1) }}</span>
+              </div>
+            </div>
+            <div>
+              <p class="mb-0 fw-bold fs-9">{{ auth()->user()->name }}</p>
+              <p class="mb-0 text-muted fs-10">{{ auth()->user()->role_name }}</p>
+            </div>
           </div>
-        </div>
-        <div class="navbar-vertical-footer"><button class="btn navbar-vertical-toggle border-0 fw-semibold w-100 white-space-nowrap d-flex align-items-center"><span class="uil uil-left-arrow-to-left fs-8"></span><span class="uil uil-arrow-from-right fs-8"></span><span class="navbar-vertical-footer-text ms-2">Collapsed View</span></button></div>
-      </nav>
+        </li>
+
+        <!-- Dashboard Section -->
+        <li class="nav-item">
+          <p class="navbar-vertical-label">Dashboard</p>
+          <hr class="navbar-vertical-line" />
+
+          @if(auth()->user()->isAdmin())
+          <!-- Admin Dashboard -->
+          <div class="nav-item-wrapper">
+            <a class="nav-link label-1 {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+               href="{{ route('admin.dashboard') }}">
+              <div class="d-flex align-items-center">
+                <span class="nav-link-icon"><span data-feather="monitor"></span></span>
+                <span class="nav-link-text">Admin Dashboard</span>
+              </div>
+            </a>
+          </div>
+          @elseif(auth()->user()->isTeacher())
+          <!-- Teacher Dashboard -->
+          <div class="nav-item-wrapper">
+            <a class="nav-link label-1 {{ request()->routeIs('teacher.dashboard') ? 'active' : '' }}"
+               href="{{ route('teacher.dashboard', ['role' => auth()->user()->role]) }}">
+              <div class="d-flex align-items-center">
+                <span class="nav-link-icon"><span data-feather="book-open"></span></span>
+                <span class="nav-link-text">Teacher Dashboard</span>
+              </div>
+            </a>
+          </div>
+          @elseif(auth()->user()->isAssistant())
+          <!-- Assistant Dashboard -->
+          <div class="nav-item-wrapper">
+            <a class="nav-link label-1 {{ request()->routeIs('assistant.dashboard') ? 'active' : '' }}"
+               href="{{ route('assistant.dashboard', ['role' => auth()->user()->role]) }}">
+              <div class="d-flex align-items-center">
+                <span class="nav-link-icon"><span data-feather="users"></span></span>
+                <span class="nav-link-text">Assistant Dashboard</span>
+              </div>
+            </a>
+          </div>
+          @else
+          <!-- Student Dashboard -->
+          <div class="nav-item-wrapper">
+            <a class="nav-link label-1 {{ request()->routeIs('student.dashboard') ? 'active' : '' }}"
+               href="{{ route('student.dashboard') }}">
+              <div class="d-flex align-items-center">
+                <span class="nav-link-icon"><span data-feather="user"></span></span>
+                <span class="nav-link-text">Student Dashboard</span>
+              </div>
+            </a>
+          </div>
+          @endif
+        </li>
+
+        @if(auth()->user()->isAdmin())
+        <!-- Admin Management Section -->
+        <li class="nav-item">
+          <p class="navbar-vertical-label">Quản lý Hệ thống</p>
+          <hr class="navbar-vertical-line" />
+
+          <!-- User Management -->
+          <div class="nav-item-wrapper">
+            <a class="nav-link dropdown-indicator label-1" href="#nv-users" role="button"
+               data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-users">
+              <div class="d-flex align-items-center">
+                <div class="dropdown-indicator-icon-wrapper">
+                  <span class="fas fa-caret-right dropdown-indicator-icon"></span>
+                </div>
+                <span class="nav-link-icon"><span data-feather="users"></span></span>
+                <span class="nav-link-text">Quản lý Tài khoản</span>
+              </div>
+            </a>
+            <div class="parent-wrapper label-1">
+              <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-users">
+                <li class="collapsed-nav-item-title d-none">Quản lý Tài khoản</li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ route('admin.users.index', ['role' => 'teacher']) }}">
+                    <div class="d-flex align-items-center">
+                      <span class="nav-link-text">Giáo viên</span>
+                      <span class="badge bg-success ms-auto">{{ \App\Models\User::whereIn('role', [1,2,3])->where('is_active', true)->count() }}</span>
+                    </div>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ route('admin.users.index', ['role' => 'assistant']) }}">
+                    <div class="d-flex align-items-center">
+                      <span class="nav-link-text">Trợ lý</span>
+                      <span class="badge bg-warning ms-auto">{{ \App\Models\User::whereIn('role', [4,5])->where('is_active', true)->count() }}</span>
+                    </div>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ route('admin.users.index', ['role' => 'student']) }}">
+                    <div class="d-flex align-items-center">
+                      <span class="nav-link-text">Học sinh</span>
+                      <span class="badge bg-primary ms-auto">{{ \App\Models\User::whereIn('role', [6,7])->where('is_active', true)->count() }}</span>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- System Settings -->
+          <div class="nav-item-wrapper">
+            <a class="nav-link label-1" href="{{ route('admin.settings') }}">
+              <div class="d-flex align-items-center">
+                <span class="nav-link-icon"><span data-feather="settings"></span></span>
+                <span class="nav-link-text">Cấu hình Hệ thống</span>
+              </div>
+            </a>
+          </div>
+        </li>
+        @endif
+
+
+
+      </ul>
+    </div>
+  </div>
+  <div class="navbar-vertical-footer">
+    <button class="btn navbar-vertical-toggle border-0 fw-semibold w-100 white-space-nowrap d-flex align-items-center">
+      <span class="uil uil-left-arrow-to-left fs-8"></span>
+      <span class="uil uil-arrow-from-right fs-8"></span>
+      <span class="navbar-vertical-footer-text ms-2">Thu gọn</span>
+    </button>
+  </div>
+</nav>
       <nav class="navbar navbar-top fixed-top navbar-expand" id="navbarDefault" style="display:none;">
         <div class="collapse navbar-collapse justify-content-between">
           <div class="navbar-logo">
             <button class="btn navbar-toggler navbar-toggler-humburger-icon hover-bg-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#navbarVerticalCollapse" aria-controls="navbarVerticalCollapse" aria-expanded="false" aria-label="Toggle Navigation"><span class="navbar-toggle-icon"><span class="toggle-line"></span></span></button>
-            <a class="navbar-brand me-1 me-sm-3" href="index.html">
+            <a class="navbar-brand me-1 me-sm-3" href="{{ route('home') }}">
               <div class="d-flex align-items-center">
-                <div class="d-flex align-items-center"><img src="assets/img/icons/logo.png" alt="phoenix" width="27" />
-                  <h5 class="logo-text ms-2 d-none d-sm-block">phoenix</h5>
+                <div class="d-flex align-items-center">
+                  <img src="{{ asset('assets/img/icons/logo.png') }}" alt="Owl English" width="27" />
+                  <h5 class="logo-text ms-2 d-none d-sm-block text-primary">Owl English</h5>
                 </div>
               </div>
             </a>
@@ -228,38 +340,109 @@
               </div>
             </li>
             <li class="nav-item dropdown"><a class="nav-link lh-1 pe-0" id="navbarDropdownUser" href="#!" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
-                <div class="avatar avatar-l ">
-                  <img class="rounded-circle " src="assets/img/team/40x40/57.webp" alt="" />
+                <div class="avatar avatar-l">
+                  <div class="avatar-name rounded-circle">
+                    <span>{{ substr(auth()->user()->name, 0, 1) }}</span>
+                  </div>
                 </div>
               </a>
               <div class="dropdown-menu dropdown-menu-end navbar-dropdown-caret py-0 dropdown-profile shadow border" aria-labelledby="navbarDropdownUser">
                 <div class="card position-relative border-0">
                   <div class="card-body p-0">
                     <div class="text-center pt-4 pb-3">
-                      <div class="avatar avatar-xl ">
-                        <img class="rounded-circle " src="assets/img/team/72x72/57.webp" alt="" />
+                      <div class="avatar avatar-xl">
+                        <div class="avatar-name rounded-circle">
+                          <span>{{ substr(auth()->user()->name, 0, 1) }}</span>
+                        </div>
                       </div>
-                      <h6 class="mt-2 text-body-emphasis">Jerry Seinfield</h6>
+                      <h6 class="mt-2 text-body-emphasis">{{ auth()->user()->name }}</h6>
+                      <p class="mb-0 text-muted fs-10">{{ auth()->user()->role_name }}</p>
+                      @php
+                        $group = auth()->user()->getRoleGroup();
+                        $badgeClass = match($group) {
+                          'admin' => 'bg-danger',
+                          'teacher' => 'bg-success',
+                          'assistant' => 'bg-warning',
+                          'student' => 'bg-primary',
+                          default => 'bg-secondary'
+                        };
+                        $groupNames = [
+                          'admin' => 'Quản trị viên',
+                          'teacher' => 'Giáo viên',
+                          'assistant' => 'Trợ lý',
+                          'student' => 'Học sinh'
+                        ];
+                      @endphp
+                      <span class="badge {{ $badgeClass }}">{{ $groupNames[$group] ?? 'Không xác định' }}</span>
                     </div>
-                    <div class="mb-3 mx-3"><input class="form-control form-control-sm" id="statusUpdateInput" type="text" placeholder="Update your status" /></div>
+                    <div class="mb-3 mx-3">
+                      <input class="form-control form-control-sm" id="statusUpdateInput" type="text" placeholder="Cập nhật trạng thái của bạn" />
+                    </div>
                   </div>
                   <div class="overflow-auto scrollbar" style="height: 10rem;">
                     <ul class="nav d-flex flex-column mb-2 pb-1">
-                      <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"> <span class="me-2 text-body align-bottom" data-feather="user"></span><span>Profile</span></a></li>
-                      <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"><span class="me-2 text-body align-bottom" data-feather="pie-chart"></span>Dashboard</a></li>
-                      <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"> <span class="me-2 text-body align-bottom" data-feather="lock"></span>Posts &amp; Activity</a></li>
-                      <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"> <span class="me-2 text-body align-bottom" data-feather="settings"></span>Settings &amp; Privacy </a></li>
-                      <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"> <span class="me-2 text-body align-bottom" data-feather="help-circle"></span>Help Center</a></li>
-                      <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"> <span class="me-2 text-body align-bottom" data-feather="globe"></span>Language</a></li>
+                      <li class="nav-item">
+                        <a class="nav-link px-3 d-block" href="{{ route('profile.index') }}">
+                          <span class="me-2 text-body align-bottom" data-feather="user"></span>
+                          <span>Hồ sơ cá nhân</span>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link px-3 d-block" href="{{
+                          auth()->user()->isAdmin() ? route('admin.dashboard') :
+                          (auth()->user()->isTeacher() ? route('teacher.dashboard', ['role' => auth()->user()->role]) :
+                          (auth()->user()->isAssistant() ? route('assistant.dashboard', ['role' => auth()->user()->role]) :
+                          route('student.dashboard')))
+                        }}">
+                          <span class="me-2 text-body align-bottom" data-feather="pie-chart"></span>Dashboard
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link px-3 d-block" href="{{ route('profile.activity') }}">
+                          <span class="me-2 text-body align-bottom" data-feather="activity"></span>Hoạt động
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link px-3 d-block" href="{{ route('profile.settings') }}">
+                          <span class="me-2 text-body align-bottom" data-feather="settings"></span>Cài đặt
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link px-3 d-block" href="{{ route('help.index') }}">
+                          <span class="me-2 text-body align-bottom" data-feather="help-circle"></span>Trợ giúp
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link px-3 d-block" href="{{ route('settings.language') }}">
+                          <span class="me-2 text-body align-bottom" data-feather="globe"></span>Ngôn ngữ
+                        </a>
+                      </li>
                     </ul>
                   </div>
                   <div class="card-footer p-0 border-top border-translucent">
+                    @if(auth()->user()->isAdmin())
                     <ul class="nav d-flex flex-column my-3">
-                      <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"> <span class="me-2 text-body align-bottom" data-feather="user-plus"></span>Add another account</a></li>
+                      <li class="nav-item">
+                        <a class="nav-link px-3 d-block" href="{{ route('admin.users.create') }}">
+                          <span class="me-2 text-body align-bottom" data-feather="user-plus"></span>Tạo tài khoản mới
+                        </a>
+                      </li>
                     </ul>
                     <hr />
-                    <div class="px-3"> <a class="btn btn-phoenix-secondary d-flex flex-center w-100" href="#!"> <span class="me-2" data-feather="log-out"> </span>Sign out</a></div>
-                    <div class="my-2 text-center fw-bold fs-10 text-body-quaternary"><a class="text-body-quaternary me-1" href="#!">Privacy policy</a>&bull;<a class="text-body-quaternary mx-1" href="#!">Terms</a>&bull;<a class="text-body-quaternary ms-1" href="#!">Cookies</a></div>
+                    @endif
+                    <div class="px-3">
+                      <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="btn btn-phoenix-secondary d-flex flex-center w-100">
+                          <span class="me-2" data-feather="log-out"></span>Đăng xuất
+                        </button>
+                      </form>
+                    </div>
+                    <div class="my-2 text-center fw-bold fs-10 text-body-quaternary">
+                      <a class="text-body-quaternary me-1" href="{{ route('privacy') }}">Chính sách</a>&bull;
+                      <a class="text-body-quaternary mx-1" href="{{ route('terms') }}">Điều khoản</a>&bull;
+                      <a class="text-body-quaternary ms-1" href="{{ route('cookies') }}">Cookies</a>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -20,34 +20,152 @@ class AdminSeeder extends Seeder
             'is_active' => true,
         ]);
 
-        // Create Teacher (role 1)
+        // Create Teacher Teaching (role 1)
         User::create([
-            'name' => 'Teacher',
-            'email' => 'teacher@owlenglish.com',
+            'name' => 'Giáo viên Giảng dạy',
+            'email' => 'teacher_teaching@owlenglish.com',
             'password' => Hash::make('123456'),
-            'role' => User::ROLE_TEACHER,
+            'role' => User::ROLE_TEACHER_TEACHING,
             'email_verified_at' => now(),
             'is_active' => true,
         ]);
 
-        // Create Assistant (role 2)
+        // Create Teacher Grading (role 2)
         User::create([
-            'name' => 'Assistant',
-            'email' => 'assistant@owlenglish.com',
+            'name' => 'Giáo viên Chấm bài',
+            'email' => 'teacher_grading@owlenglish.com',
             'password' => Hash::make('123456'),
-            'role' => User::ROLE_ASSISTANT,
+            'role' => User::ROLE_TEACHER_GRADING,
             'email_verified_at' => now(),
             'is_active' => true,
         ]);
 
-        // Create Student (role 3)
+        // Create Teacher Content (role 3)
         User::create([
-            'name' => 'Student',
-            'email' => 'student@owlenglish.com',
+            'name' => 'Giáo viên Làm đề',
+            'email' => 'teacher_content@owlenglish.com',
             'password' => Hash::make('123456'),
-            'role' => User::ROLE_STUDENT,
+            'role' => User::ROLE_TEACHER_CONTENT,
             'email_verified_at' => now(),
             'is_active' => true,
         ]);
+
+        // Create Student Care (role 4)
+        User::create([
+            'name' => 'Chăm sóc Học viên',
+            'email' => 'student_care@owlenglish.com',
+            'password' => Hash::make('123456'),
+            'role' => User::ROLE_STUDENT_CARE,
+            'email_verified_at' => now(),
+            'is_active' => true,
+        ]);
+
+        // Create Assistant Content (role 5)
+        User::create([
+            'name' => 'Trợ lý Nội dung',
+            'email' => 'assistant_content@owlenglish.com',
+            'password' => Hash::make('123456'),
+            'role' => User::ROLE_ASSISTANT_CONTENT,
+            'email_verified_at' => now(),
+            'is_active' => true,
+        ]);
+
+        // Create Student Center (role 6)
+        User::create([
+            'name' => 'Học viên Trung tâm',
+            'email' => 'student_center@owlenglish.com',
+            'password' => Hash::make('123456'),
+            'role' => User::ROLE_STUDENT_CENTER,
+            'email_verified_at' => now(),
+            'is_active' => true,
+        ]);
+
+        // Create Student Visitor (role 7)
+        User::create([
+            'name' => 'Học viên Vãng lai',
+            'email' => 'student_visitor@owlenglish.com',
+            'password' => Hash::make('123456'),
+            'role' => User::ROLE_STUDENT_VISITOR,
+            'email_verified_at' => now(),
+            'is_active' => true,
+        ]);
+
+        // Create additional sample users for each role group
+        $this->createSampleUsers();
+    }
+
+    private function createSampleUsers(): void
+    {
+        // Additional Teachers
+        for ($i = 1; $i <= 3; $i++) {
+            User::create([
+                'name' => "Giáo viên Giảng dạy {$i}",
+                'email' => "gv_gd{$i}@owlenglish.com",
+                'password' => Hash::make('123456'),
+                'role' => User::ROLE_TEACHER_TEACHING,
+                'email_verified_at' => now(),
+                'is_active' => true,
+            ]);
+
+            User::create([
+                'name' => "Giáo viên Chấm bài {$i}",
+                'email' => "gv_cb{$i}@owlenglish.com",
+                'password' => Hash::make('123456'),
+                'role' => User::ROLE_TEACHER_GRADING,
+                'email_verified_at' => now(),
+                'is_active' => true,
+            ]);
+
+            User::create([
+                'name' => "Giáo viên Làm đề {$i}",
+                'email' => "gv_ld{$i}@owlenglish.com",
+                'password' => Hash::make('123456'),
+                'role' => User::ROLE_TEACHER_CONTENT,
+                'email_verified_at' => now(),
+                'is_active' => true,
+            ]);
+        }
+
+        // Additional Assistants
+        for ($i = 1; $i <= 2; $i++) {
+            User::create([
+                'name' => "Chăm sóc Học viên {$i}",
+                'email' => "cshv{$i}@owlenglish.com",
+                'password' => Hash::make('123456'),
+                'role' => User::ROLE_STUDENT_CARE,
+                'email_verified_at' => now(),
+                'is_active' => true,
+            ]);
+
+            User::create([
+                'name' => "Trợ lý Nội dung {$i}",
+                'email' => "tlnd{$i}@owlenglish.com",
+                'password' => Hash::make('123456'),
+                'role' => User::ROLE_ASSISTANT_CONTENT,
+                'email_verified_at' => now(),
+                'is_active' => true,
+            ]);
+        }
+
+        // Additional Students
+        for ($i = 1; $i <= 5; $i++) {
+            User::create([
+                'name' => "Học viên TT {$i}",
+                'email' => "hvtt{$i}@owlenglish.com",
+                'password' => Hash::make('123456'),
+                'role' => User::ROLE_STUDENT_CENTER,
+                'email_verified_at' => now(),
+                'is_active' => true,
+            ]);
+
+            User::create([
+                'name' => "Học viên VL {$i}",
+                'email' => "hvvl{$i}@owlenglish.com",
+                'password' => Hash::make('123456'),
+                'role' => User::ROLE_STUDENT_VISITOR,
+                'email_verified_at' => now(),
+                'is_active' => true,
+            ]);
+        }
     }
 }
