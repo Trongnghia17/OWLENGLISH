@@ -38,15 +38,19 @@ class CheckRole
         return $next($request);
     }
 
-    private function convertRoleToInt(string $role): int
+  private function convertRoleToInt(string $role): int
     {
         $roleMap = [
             'admin' => 0,
-            'teacher' => 1,
-            'assistant' => 2,
-            'student' => 3,
+            'teacher_teaching' => 1,
+            'teacher_grading' => 2,
+            'teacher_content' => 3,
+            'student_care' => 4,
+            'assistant_content' => 5,
+            'student_center' => 6,
+            'student_visitor' => 7,
         ];
 
-        return $roleMap[$role] ?? 3; // Default to student (highest number)
+        return $roleMap[$role] ?? 7; // Default to student_visitor (highest number)
     }
 }

@@ -27,14 +27,14 @@ class UserController extends Controller
         // Search by name or email
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
         $users = $query->latest()->paginate(10);
-        
+
         return view('admin.users.index', compact('users'));
     }
 
@@ -49,7 +49,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
-            'role' => 'required|integer|in:0,1,2,3', // 0: admin, 1: teacher, 2: assistant, 3: student
+            'role' => 'required|integer|in:0,1,2,3,4,5,6,7', // All new roles
             'is_active' => 'boolean',
         ]);
 
@@ -85,7 +85,7 @@ class UserController extends Controller
                 Rule::unique('users')->ignore($user->id),
             ],
             'password' => 'nullable|string|min:6|confirmed',
-            'role' => 'required|integer|in:0,1,2,3', // 0: admin, 1: teacher, 2: assistant, 3: student
+            'role' => 'required|integer|in:0,1,2,3,4,5,6,7', 
             'is_active' => 'boolean',
         ]);
 

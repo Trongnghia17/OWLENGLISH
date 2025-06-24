@@ -13,15 +13,23 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     const ROLE_ADMIN = 0;
-    const ROLE_TEACHER = 1;
-    const ROLE_ASSISTANT = 2;
-    const ROLE_STUDENT = 3;
+    const ROLE_TEACHER_TEACHING = 1;
+    const ROLE_TEACHER_GRADING = 2;
+    const ROLE_TEACHER_CONTENT = 3;
+    const ROLE_STUDENT_CARE = 4;
+    const ROLE_ASSISTANT_CONTENT = 5;
+    const ROLE_STUDENT_CENTER = 6;
+    const ROLE_STUDENT_VISITOR = 7;
 
     const ROLE_NAMES = [
-        self::ROLE_ADMIN => 'Quản trị viên',
-        self::ROLE_TEACHER => 'Giáo viên',
-        self::ROLE_ASSISTANT => 'Trợ giảng',
-        self::ROLE_STUDENT => 'Học viên',
+        self::ROLE_ADMIN => 'Quản lý tài khoản Admin',
+        self::ROLE_TEACHER_TEACHING => 'Giáo viên giảng dạy',
+        self::ROLE_TEACHER_GRADING => 'Giáo viên chấm sửa bài',
+        self::ROLE_TEACHER_CONTENT => 'Giáo viên làm đề, chủ đề',
+        self::ROLE_STUDENT_CARE => 'Chăm sóc học viên',
+        self::ROLE_ASSISTANT_CONTENT => 'Trợ lý chuyên môn làm đề, chủ đề',
+        self::ROLE_STUDENT_CENTER => 'Học viên trung tâm',
+        self::ROLE_STUDENT_VISITOR => 'Học viên vãng lai',
     ];
 
     /**

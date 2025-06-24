@@ -55,15 +55,20 @@ class AuthController extends Controller
         return redirect()->route('login');
     }
 
-    private function redirectBasedOnRole(User $user)
+     private function redirectBasedOnRole(User $user)
     {
         switch ($user->role) {
             case User::ROLE_ADMIN:
                 return redirect()->route('admin.dashboard');
-            case User::ROLE_TEACHER:
+            case User::ROLE_TEACHER_TEACHING:
+            case User::ROLE_TEACHER_GRADING:
+            case User::ROLE_TEACHER_CONTENT:
                 return redirect()->route('teacher.dashboard');
-            case User::ROLE_ASSISTANT:
+            case User::ROLE_STUDENT_CARE:
+            case User::ROLE_ASSISTANT_CONTENT:
                 return redirect()->route('assistant.dashboard');
+            case User::ROLE_STUDENT_CENTER:
+            case User::ROLE_STUDENT_VISITOR:
             default:
                 return redirect()->route('student.dashboard');
         }
