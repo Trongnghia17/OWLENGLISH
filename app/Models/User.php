@@ -41,6 +41,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'password',
         'role',
         'is_active',
@@ -69,6 +70,26 @@ class User extends Authenticatable
             'is_active' => 'boolean',
             'role' => 'integer',
         ];
+    }
+
+    /**
+     * Get the name of the unique identifier for the user.
+     *
+     * @return string
+     */
+    public function getAuthIdentifierName()
+    {
+        return 'phone';
+    }
+
+    /**
+     * Get the username field name.
+     *
+     * @return string
+     */
+    public function username()
+    {
+        return 'phone';
     }
 
     // Role checking methods

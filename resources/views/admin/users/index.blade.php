@@ -6,7 +6,7 @@
 <div class="content">
     <div class="pb-5">
 
-    
+
         <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h2 mb-0">
         @if(request('role') === 'teacher')
@@ -37,7 +37,7 @@
             </div>
         </div>
 
-    
+
         <!-- Success/Error Messages -->
         @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -60,21 +60,21 @@
                     <thead class="table-light">
                         <tr>
                             <th scope="col" class="border-0 px-4 py-3">
-                                TÀI KHOẢN 
+                                TÀI KHOẢN
                             </th>
                             <th scope="col" class="border-0 px-4 py-3">
-                                EMAIL 
+                                EMAIL
                             </th>
                             <th scope="col" class="border-0 px-4 py-3">
-                                VAI TRÒ 
+                                VAI TRÒ
                             </th>
                             <th scope="col" class="border-0 px-4 py-3">
-                                TRẠNG THÁI 
+                                TRẠNG THÁI
                             </th>
                             <th scope="col" class="border-0 px-4 py-3">
-                                NGÀY TẠO 
+                                NGÀY TẠO
                             </th>
-                            <th scope="col" class="border-0 px-4 py-3">
+                            <th scope="col" class="border-0 px-4 py-3 text-center">
                                 THAO TÁC
                             </th>
                         </tr>
@@ -84,7 +84,7 @@
                         <tr>
                             <td class="px-4 py-3">
                                 <div class="d-flex align-items-center">
-                                    <div class="avatar-circle me-3 bg-primary text-white d-flex align-items-center justify-content-center" 
+                                    <div class="avatar-circle me-3 bg-primary text-white d-flex align-items-center justify-content-center"
                                          style="width: 40px; height: 40px; border-radius: 50%; font-weight: 600;">
                                         {{ strtoupper(substr($user->name, 0, 1)) }}
                                     </div>
@@ -124,8 +124,8 @@
                             </td>
                             <td class="px-4 py-3 text-center ">
                                 <div class="dropdown">
-                                    <button class="btn btn-outline-secondary btn-sm " type="button" 
-                                            data-bs-toggle="dropdown" aria-expanded="false" 
+                                    <button class="btn btn-outline-secondary btn-sm " type="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false"
                                             data-bs-auto-close="outside">
                            <i class="fas fa-ellipsis-v"></i>
                                     </button>
@@ -142,7 +142,7 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <form method="POST" action="{{ route('admin.users.toggle-status', $user) }}" 
+                                            <form method="POST" action="{{ route('admin.users.toggle-status', $user) }}"
                                                   class="d-inline w-100">
                                                 @csrf
                                                 @method('PATCH')
@@ -157,7 +157,7 @@
                                         @if($user->id !== auth()->id())
                                         <li><hr class="dropdown-divider"></li>
                                         <li>
-                                            <form method="POST" action="{{ route('admin.users.destroy', $user) }}" 
+                                            <form method="POST" action="{{ route('admin.users.destroy', $user) }}"
                                                   class="d-inline w-100"
                                                   onsubmit="event.stopPropagation(); return confirm('Bạn có chắc chắn muốn xóa tài khoản này?')">
                                                 @csrf
@@ -191,7 +191,7 @@
         @if($users->hasPages())
         <div class="d-flex justify-content-between align-items-center mt-4">
             <div class="text-muted">
-                Hiển thị {{ $users->firstItem() }} đến {{ $users->lastItem() }} 
+                Hiển thị {{ $users->firstItem() }} đến {{ $users->lastItem() }}
                 trong tổng số {{ $users->total() }} kết quả
             </div>
             <nav aria-label="Phân trang">

@@ -13,11 +13,11 @@ class UserController extends Controller
 public function index(Request $request)
 {
     $query = User::query();
-    
+
     // Filter by role group if specified
     if ($request->has('role')) {
         $roleParam = $request->get('role');
-        
+
         switch ($roleParam) {
             case 'teacher':
                 $query->whereIn('role', [1, 2, 3]); // Teacher roles
@@ -33,7 +33,7 @@ public function index(Request $request)
                 break;
         }
     }
-    
+
     // Add search functionality if search term exists
     if ($request->has('search') && $request->search) {
         $searchTerm = $request->search;
@@ -42,12 +42,12 @@ public function index(Request $request)
               ->orWhere('email', 'like', "%{$searchTerm}%");
         });
     }
-    
+
     $users = $query->orderBy('created_at', 'desc')->paginate(15);
-    
+
     // Preserve query parameters in pagination links
     $users->appends($request->query());
-    
+
     return view('admin.users.index', compact('users'));
 }
 
@@ -104,7 +104,7 @@ public function index(Request $request)
                 Rule::unique('users')->ignore($user->id),
             ],
             'password' => 'nullable|string|min:6|confirmed',
-            'role' => 'required|integer|in:0,1,2,3,4,5,6,7', 
+            'role' => 'required|integer|in:0,1,2,3,4,5,6,7',
             'is_active' => 'boolean',
         ]);
 
@@ -133,15 +133,7 @@ public function index(Request $request)
 
     public function destroy(User $user)
     {
-       
-
-        if ($user->id === auth()->id()) {
-            return redirect()->route('admin.users.index')
-                ->with('error', 'Bạn không thể xóa tài khoản của chính mình!');
-        }
-
         $user->delete();
-
         return redirect()->route('admin.users.index')
             ->with('success', 'Xóa tài khoản thành công!');
     }
@@ -166,47 +158,4 @@ public function index(Request $request)
             ->with('success', "Đã {$status} tài khoản thành công!");
     }
 
-    public function bulkUpdateRole(Request $request)
-    {
-        // Kiểm tra quyền
-        if (!auth()->user()->canEditRole()) {
-            return response()->json(['error' => 'Bạn không có quyền thực hiện thao tác này!'], 403);
-        }
-
-        $request->validate([
-            'user_ids' => 'required|array',
-            'user_ids.*' => 'exists:users,id',
-            'new_role' => 'required|integer|in:0,1,2,3,4,5,6,7',
-        ]);
-
-        // Loại bỏ user hiện tại khỏi danh sách
-        $userIds = array_filter($request->user_ids, function($id) {
-            return $id != auth()->id();
-        });
-
-        if (empty($userIds)) {
-            return response()->json(['error' => 'Không có user nào để cập nhật!'], 400);
-        }
-
-        $updatedCount = User::whereIn('id', $userIds)->update(['role' => $request->new_role]);
-
-        return response()->json([
-            'success' => true,
-            'message' => "Đã cập nhật vai trò cho {$updatedCount} tài khoản!",
-            'updated_count' => $updatedCount
-        ]);
-    }
-
-    public function getRoleStats()
-    {
-        $stats = [];
-        $roleGroups = User::getMainRoleGroups();
-        
-        foreach ($roleGroups as $groupName => $roles) {
-            $count = User::whereIn('role', $roles)->where('is_active', true)->count();
-            $stats[$groupName] = $count;
-        }
-
-        return response()->json($stats);
-    }
 }
