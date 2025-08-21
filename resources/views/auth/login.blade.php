@@ -103,7 +103,7 @@
                         
                         <div class="position-relative">
                             <hr class="bg-body-secondary mt-5 mb-4">
-                            <div class="divider-content-center">or use email</div>
+                            <div class="divider-content-center">hoặc sử dụng số điện thoại</div>
                         </div>
 
                         <!-- Login Form -->
@@ -111,19 +111,21 @@
                             @csrf
                             
                             <div class="mb-3 text-start">
-                                <label class="form-label" for="email">Email address</label>
+                                <label class="form-label" for="phone">Số điện thoại</label>
                                 <div class="form-icon-container">
-                                    <input class="form-control form-icon-input @error('email') is-invalid @enderror" 
-                                           id="email" 
-                                           type="email" 
-                                           name="email"
-                                           value="{{ old('email') }}"
-                                           placeholder="name@example.com" 
+                                    <input class="form-control form-icon-input @error('phone') is-invalid @enderror" 
+                                           id="phone" 
+                                           type="tel" 
+                                           name="phone"
+                                           value="{{ old('phone') }}"
+                                           placeholder="0987654321" 
+                                           pattern="[0-9]{10,11}"
+                                           maxlength="11"
                                            required 
                                            autofocus>
-                                    <span class="fas fa-user text-body fs-9 form-icon"></span>
+                                    <span class="fas fa-phone text-body fs-9 form-icon"></span>
                                 </div>
-                                @error('email')
+                                @error('phone')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>

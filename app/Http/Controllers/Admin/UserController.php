@@ -10,33 +10,46 @@ use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    public function index(Request $request)
-    {
-        $query = User::query();
+public function index(Request $request)
+{
+    $query = User::query();
 
-        // Filter by role
-        if ($request->filled('role') && is_numeric($request->role)) {
-            $query->where('role', $request->role);
+    // Filter by role group if specified
+    if ($request->has('role')) {
+        $roleParam = $request->get('role');
+
+        switch ($roleParam) {
+            case 'teacher':
+                $query->whereIn('role', [1, 2, 3]); // Teacher roles
+                break;
+            case 'assistant':
+                $query->whereIn('role', [4, 5]); // Assistant roles
+                break;
+            case 'student':
+                $query->whereIn('role', [6, 7]); // Student roles
+                break;
+            case '0': // Admin role
+                $query->where('role', 0);
+                break;
         }
-
-        // Filter by status
-        if ($request->filled('status')) {
-            $query->where('is_active', $request->status === 'active');
-        }
-
-        // Search by name or email
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
-            });
-        }
-
-        $users = $query->latest()->paginate(10);
-        
-        return view('admin.users.index', compact('users'));
     }
+
+    // Add search functionality if search term exists
+    if ($request->has('search') && $request->search) {
+        $searchTerm = $request->search;
+        $query->where(function($q) use ($searchTerm) {
+            $q->where('name', 'like', "%{$searchTerm}%")
+              ->orWhere('email', 'like', "%{$searchTerm}%");
+        });
+    }
+
+    $users = $query->orderBy('created_at', 'desc')->paginate(15);
+
+    // Preserve query parameters in pagination links
+    $users->appends($request->query());
+
+    return view('admin.users.index', compact('users'));
+}
 
     public function create()
     {
@@ -49,7 +62,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
-            'role' => 'required|integer|in:0,1,2,3', // 0: admin, 1: teacher, 2: assistant, 3: student
+            'role' => 'required|integer|in:0,1,2,3,4,5,6,7', // All new roles
             'is_active' => 'boolean',
         ]);
 
@@ -77,6 +90,12 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+        // Kiểm tra quyền sửa vai trò
+        if (!auth()->user()->canEditRole()) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'Bạn không có quyền chỉnh sửa vai trò!');
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => [
@@ -85,9 +104,15 @@ class UserController extends Controller
                 Rule::unique('users')->ignore($user->id),
             ],
             'password' => 'nullable|string|min:6|confirmed',
-            'role' => 'required|integer|in:0,1,2,3', // 0: admin, 1: teacher, 2: assistant, 3: student
+            'role' => 'required|integer|in:0,1,2,3,4,5,6,7',
             'is_active' => 'boolean',
         ]);
+
+        // Không cho phép admin tự thay đổi vai trò của mình
+        if ($user->id === auth()->id() && $request->role != $user->role) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'Bạn không thể thay đổi vai trò của chính mình!');
+        }
 
         $updateData = [
             'name' => $request->name,
@@ -108,19 +133,19 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        if ($user->id === auth()->id()) {
-            return redirect()->route('admin.users.index')
-                ->with('error', 'Bạn không thể xóa tài khoản của chính mình!');
-        }
-
         $user->delete();
-
         return redirect()->route('admin.users.index')
             ->with('success', 'Xóa tài khoản thành công!');
     }
 
     public function toggleStatus(User $user)
     {
+        // Kiểm tra quyền thay đổi trạng thái
+        if (!auth()->user()->canEditRole()) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'Bạn không có quyền thay đổi trạng thái tài khoản!');
+        }
+
         if ($user->id === auth()->id()) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'Bạn không thể thay đổi trạng thái tài khoản của chính mình!');
@@ -132,4 +157,5 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')
             ->with('success', "Đã {$status} tài khoản thành công!");
     }
+
 }
